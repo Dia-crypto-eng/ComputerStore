@@ -1,19 +1,28 @@
-from django.db import models
+from django.db import models as db
 
 # Create your models here.
-class Category(models.TextChoices):
-    KASHABIA='kashabia'    
-    THAWB='thawb'
 
-class Product(models.Model):
+
+
+
+
+
+
+
+
+class Category(db.TextChoices):
+    LAPTOP='laptop'    
+    RAM='ram'
+
+class Product(db.Model):
     
     __name__="product"
-    name = models.CharField(max_length=50,default="",blank=False)
+    name = db.CharField(max_length=50,default="more",blank=True)
     #caractristic = models.CharField(max_length=50,default="",blank=False)
-    price = models.DecimalField(max_digits=7,decimal_places=2,default=0)
-    brand = models.CharField(max_length=50,default="",blank=False)
-    category = models.CharField(max_length=50,choices=Category.choices,default=Category.THAWB)
-    stock=models.IntegerField(default=0)
+    price = db.DecimalField(max_digits=7,decimal_places=2,default=0)
+    brand = db.CharField(max_length=50,default="",blank=False)
+    category = db.CharField(max_length=50,choices=Category.choices,default=Category.LAPTOP)
+    stock=db.IntegerField(default=0)
     
     def __str__(self):
         return 
