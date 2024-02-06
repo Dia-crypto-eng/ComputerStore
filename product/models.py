@@ -10,10 +10,13 @@ from django.db import models as db
 
 
 
-class Category(db.TextChoices):
-    LAPTOP='laptop'    
-    RAM='ram'
-
+class Category(db.Model):
+        
+    name = db.CharField(max_length=250,unique=True , default="",blank=False)    
+    def __str__(self):
+        return self.name
+    
+    
 class Product(db.Model):
     
     __name__="product"
@@ -21,11 +24,11 @@ class Product(db.Model):
     #caractristic = models.CharField(max_length=50,default="",blank=False)
     price = db.DecimalField(max_digits=7,decimal_places=2,default=0)
     brand = db.CharField(max_length=50,default="",blank=False)
-    category = db.CharField(max_length=50,choices=Category.choices,default=Category.LAPTOP)
+    category = db.ForeignKey(Category,on_delete=db.PROTECT,related_name="choices")
     stock=db.IntegerField(default=0)
     
     def __str__(self):
-        return 
+        return self.name
 
     def __unicode__(self):
         return 
