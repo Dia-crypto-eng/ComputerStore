@@ -1,10 +1,6 @@
 from rest_framework import serializers
 from ComputerStore.SumplifySerializer import DynamicFieldsModelSerializer
-from product.models import Product
 from .models import Invoice,InvoiceItem
-from product.serializers import ProductSerializer
-
-
         
 class InvoiceSerializer(DynamicFieldsModelSerializer):
     
@@ -40,12 +36,5 @@ class InvoiceItemSerializer(serializers.ModelSerializer):
     # price_buy = serializers.FloatField(required=False)
     # quantity = serializers.IntegerField(max_value=9223372036854775807, min_value=-9223372036854775808, required=False)
  
-#  Id = 111,
-#  IdFactureElement = 122,
-#  CategoryProduct = "SSS",
-#  MarkProduct = "RRRRR",
-#  NameProduct = "TTTTtttttttttttttttttt",
-#  Price_buy = 333,
-#  Quantity = 4,
-#  Amount = 5555 },
+
      
