@@ -14,8 +14,9 @@ def get_all_category(request):
 
 @api_view(['GET'])
 def get_product_by_category(request,category):
-    id=Category.objects.get(name=category)
-    product=Product.objects.filter(category=id)
+    category=Category.objects.get(name=category)
+    # product=Product.objects.filter(category=id)
+    product=category.products.all()
     serializer=ProductSerializer(product,many=True)
     return Response( serializer.data)
     # return Response( "test")

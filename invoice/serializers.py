@@ -14,7 +14,7 @@ class InvoiceItemSerializer(serializers.ModelSerializer):
     # provider = serializers.RelatedField(source='invoice.provider', read_only=True) 
     # invoice=serializers.ModelSerializer(read_only=True)
     id = serializers.IntegerField(source='invoice.id',read_only=True)
-    markProduct = serializers.CharField(source='product.brand',max_length=50, required=False)
+    markProduct = serializers.CharField(source='product.mark',max_length=50, required=False)
     nameProduct = serializers.CharField(source='product.name',allow_blank=True, max_length=50, required=False)
     amount = serializers.SerializerMethodField()
 
