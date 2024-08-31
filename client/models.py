@@ -1,6 +1,5 @@
 from django.db import models as db
 
-from invoice.models import Invoice
 
 # Create your models here.
 
@@ -47,7 +46,23 @@ class Company(db.Model):
     #Address = db.TextField(default="",blank=False)
     def __str__(self):
         return str(self.CompanyName)
+    
+    
+# 5. ClientCompanyLinks
+# LinkID
+# ClientID
+# CompanyID
 
+
+class ClientCompanyLink(db.Model):
+    
+    __name__="clientCompanyLink"
+    LinkID=db.AutoField(primary_key=True)
+    Client = db.ForeignKey(Client,on_delete=db.PROTECT)
+    Company = db.ForeignKey(Company,on_delete=db.PROTECT)
+    
+    def __str__(self):
+        return str(self.Client.FirstName+self.Client.LastName)
 
 # 3. Payments
 # PaymentID
@@ -67,63 +82,13 @@ class Payment(db.Model):
     
     __name__="payment"
     PaymentID=db.AutoField(primary_key=True)
-    Client = db.ForeignKey(Client,on_delete=db.PROTECT)
     PaymentMethod = db.CharField(max_length=20,choices=PAYMENT_CHOICES,default='cash')
     AmountPaid = db.FloatField(default=0)
     PaymentDate= db.DateField(default=0)
     def __str__(self):
-        return str(self.Client.FirstName+self.Client.LastName)
-
-
-# 4. PaymentInvoiceLinks
-# LinkID
-# ClientID
-# IsPayment
-# RelatedID
-
-
-class PaymentInvoiceLink(db.Model):
-    
-    LINK_TYPE_CHOICES = [
-        ('payment', 'Payment'),
-        ('invoice', 'Invoice'),
-    ]
-    
-    __name__="paymentInvoiceLink"
-    link_id = db.AutoField(primary_key=True)
-    client = db.ForeignKey(Client, on_delete=db.CASCADE)
-    is_payment = db.CharField(max_length=10,choices=LINK_TYPE_CHOICES)
-    related_payment = db.ForeignKey(Payment, null=True, blank=True, on_delete=db.CASCADE)
-    related_invoice = db.ForeignKey(Invoice, null=True, blank=True, on_delete=db.CASCADE)
-
-    def save(self, *args, **kwargs):
-        # تحديد الحقول المرتبطة بناءً على قيمة is_payment
-        if self.is_payment == 'payment':
-            self.related_invoice = None
-        elif self.is_payment == 'invoice':
-            self.related_payment = None
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        if self.is_payment == 'payment':
-            return f"Client: {self.client}, Payment ID: {self.related_payment.id}"
-        elif self.is_payment == 'invoice':
-            return f"Client: {self.client}, Invoice ID: {self.related_invoice.id}"
+        return str(self.AmountPaid)
 
 
 
-# 5. ClientCompanyLinks
-# LinkID
-# ClientID
-# CompanyID
 
 
-class ClientCompanyLink(db.Model):
-    
-    __name__="clientCompanyLink"
-    LinkID=db.AutoField(primary_key=True)
-    Client = db.ForeignKey(Client,on_delete=db.PROTECT)
-    Company = db.ForeignKey(Company,on_delete=db.PROTECT)
-    
-    def __str__(self):
-        return str(self.Client.FirstName+self.Client.LastName)

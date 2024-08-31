@@ -1,12 +1,14 @@
 from django.db import models as db
 from product.models import Product
+from client.models import Client
 # Create your models here.
 class Invoice(db.Model):
     
     __name__="invoice"
     id=db.AutoField(primary_key=True)
     date = db.DateField(blank=False)
-    provider=db.CharField(max_length=50,default="",blank=False)
+    #provider=db.CharField(max_length=50,default="",blank=False)
+    #provider=db.ForeignKey(Client,on_delete=db.PROTECT,default=1)
     amount = db.FloatField(default=0)
     #caractristic = models.CharField(max_length=50,default="",blank=False)
     def __str__(self):
