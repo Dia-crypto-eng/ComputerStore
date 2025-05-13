@@ -8,7 +8,7 @@ class ClientCompanyLinkSerializer(serializers.ModelSerializer):
     crn = serializers.CharField(source='Company.CRN',max_length=50, required=False)
     nis = serializers.CharField(source='Company.NIS', max_length=50, required=False)
     nif = serializers.CharField(source='Company.NIF', max_length=50, required=False)
-    #email = serializers.EmailField(source='Client.Email')
+    email = serializers.EmailField(source='Client.Email')
     phoneNumber = serializers.CharField(source='Client.PhoneNumber', max_length=10, required=False)
     firstName = serializers.CharField(source='Client.FirstName', max_length=50, required=False)
     lastName = serializers.CharField(source='Client.LastName', max_length=50, required=False)
@@ -16,7 +16,7 @@ class ClientCompanyLinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClientCompanyLink
         # fields =   ('idInvoiceElement','invoice','price_buy','quantity')
-        fields =   ('LinkID','companyName','crn','nis','nif','phoneNumber','firstName','lastName')
+        fields =   ('LinkID','companyName','crn','nis','nif','phoneNumber','email','firstName','lastName')
 
 
 
