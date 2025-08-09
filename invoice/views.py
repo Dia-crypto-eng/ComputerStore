@@ -1,20 +1,20 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 # Create your views here.
-from .models import Invoice,InvoiceItem
-from .serializers import InvoiceSerializer,InvoiceItemSerializer
+from .models import BuyInvoice,InvoiceItem,SellInvoice
+from .serializers import InvoiceSerializer,InvoiceItemSerializer, SellInvoiceSerializer
 
 
 @api_view(['GET'])
 def get_all_invoice(request):
-    invoice=Invoice.objects.all()
+    invoice=BuyInvoice.objects.all()
     serializer=InvoiceSerializer(invoice,many=True)
     print(invoice)
     return Response( serializer.data)
 
 @api_view(['GET'])
 def get_id_invoice(request,ida):
-    invoice=Invoice.objects.get(id=ida)
+    invoice=BuyInvoice.objects.get(id=ida)
     invoiceItem=InvoiceItem.objects.filter(invoice=invoice)
 
     # invoiceItem=InvoiceItem.objects.all()
@@ -25,7 +25,12 @@ def get_id_invoice(request,ida):
     return Response( serializer.data)
 
         
-        
+@api_view(['GET'])
+def get_all_sell_invoice(request):
+    invoice=SellInvoice.objects.all()
+    serializer=SellInvoiceSerializer(invoice,many=True)
+   
+    return Response( serializer.data)        
         
         
 # i=0

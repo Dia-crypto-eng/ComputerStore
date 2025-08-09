@@ -1,41 +1,63 @@
 from rest_framework import serializers
 from ComputerStore.SumplifySerializer import DynamicFieldsModelSerializer
-from .models import Invoice,InvoiceItem
+from .models import BuyInvoice,InvoiceItem, SellInvoice
 from client.linkmodels import PaymentInvoiceLink
         
-class InvoiceSerializer(DynamicFieldsModelSerializer):
+# class InvoiceSerializer(DynamicFieldsModelSerializer):
     
+#     provider = serializers.SerializerMethodField()
+#     class Meta:
+#         model = BuyInvoice
+#         fields = ('id','date','amount','provider')
+        
+#     def get_provider(self, obj):
+#         # # #  # جمع الأسماء من الحقول المتاحة
+#         # # #  first_name = getattr(obj.provider, 'FirstName', '')
+#         # # #  last_name = getattr(obj.provider, 'LastName', '')
+#         # # #  return f"{first_name} {last_name}"
+        
+#         # العثور على PaymentInvoiceLink المرتبطة بالفاتورة
+#         payment_invoice_link = PaymentInvoiceLink.objects.filter(related_buyinvoice=obj).first()
+        
+#         if payment_invoice_link:
+#             # العثور على ClientCompanyLink المرتبطة بـ PaymentInvoiceLink
+#             client_company_link = payment_invoice_link.client
+            
+#             # الحصول على اسم الشركة من ClientCompanyLink
+#             company = client_company_link.Company
+            
+#             # # الحصول على معلومات العميل من ClientCompanyLink
+#             # client = client_company_link.Client
+#             # company = client_company_link.Company
+#             # return {
+#             #     "ClientName": f"{client.FirstName} {client.LastName}",
+#             #     "CompanyName": company.CompanyName
+#             # }
+            
+#             return company.CompanyName
+#         return None
+
+
+
+
+
+class InvoiceSerializer(DynamicFieldsModelSerializer):
     provider = serializers.SerializerMethodField()
+
     class Meta:
-        model = Invoice
-        fields = ('id','date','amount','provider')
-        
+        model = BuyInvoice
+        fields = ('id', 'date', 'amount', 'provider')
+
     def get_provider(self, obj):
-        # # #  # جمع الأسماء من الحقول المتاحة
-        # # #  first_name = getattr(obj.provider, 'FirstName', '')
-        # # #  last_name = getattr(obj.provider, 'LastName', '')
-        # # #  return f"{first_name} {last_name}"
-        
-        # العثور على PaymentInvoiceLink المرتبطة بالفاتورة
-        payment_invoice_link = PaymentInvoiceLink.objects.filter(related_invoice=obj).first()
-        
-        if payment_invoice_link:
-            # العثور على ClientCompanyLink المرتبطة بـ PaymentInvoiceLink
-            client_company_link = payment_invoice_link.client
-            
-            # الحصول على اسم الشركة من ClientCompanyLink
-            company = client_company_link.Company
-            
-            # # الحصول على معلومات العميل من ClientCompanyLink
-            # client = client_company_link.Client
-            # company = client_company_link.Company
-            # return {
-            #     "ClientName": f"{client.FirstName} {client.LastName}",
-            #     "CompanyName": company.CompanyName
-            # }
-            
+        if obj.client:
+            company = obj.client.Company
             return company.CompanyName
         return None
+
+
+
+
+
 
 
 class InvoiceItemSerializer(serializers.ModelSerializer):
@@ -66,4 +88,9 @@ class InvoiceItemSerializer(serializers.ModelSerializer):
     # quantity = serializers.IntegerField(max_value=9223372036854775807, min_value=-9223372036854775808, required=False)
  
 
-     
+class SellInvoiceSerializer(InvoiceSerializer):
+    sold = serializers.CharField()
+
+    class Meta(InvoiceSerializer.Meta):
+        model = SellInvoice
+        fields = InvoiceSerializer.Meta.fields + ('sold',)

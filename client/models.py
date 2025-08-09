@@ -85,6 +85,7 @@ class Payment(db.Model):
     PaymentMethod = db.CharField(max_length=20,choices=PAYMENT_CHOICES,default='cash')
     AmountPaid = db.FloatField(default=0)
     PaymentDate= db.DateField(default=0)
+    client = db.ForeignKey(ClientCompanyLink, on_delete=db.CASCADE)
     def __str__(self):
         return str(self.AmountPaid)
 

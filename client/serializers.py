@@ -1,6 +1,6 @@
 from rest_framework import serializers 
 from client.models import ClientCompanyLink,Payment,Company
-from invoice.models import Invoice,db
+from invoice.models import BuyInvoice,db
  
 class ClientCompanyLinkSerializer(serializers.ModelSerializer):
     
@@ -21,32 +21,84 @@ class ClientCompanyLinkSerializer(serializers.ModelSerializer):
 
 
 
+# class ClientSummarySerializer(serializers.ModelSerializer):
+#     customer_id = serializers.IntegerField(source='CompanyID')
+#     customer_name = serializers.CharField(source='CompanyName')
+#     total_purchases = serializers.SerializerMethodField()
+#     total_payments = serializers.SerializerMethodField()
+#     outstanding_balance = serializers.SerializerMethodField()
+
+#     class Meta:
+#         model = Company
+#         fields = ['customer_id', 'customer_name', 'total_purchases', 'total_payments', 'outstanding_balance']
+
+#     def get_total_purchases(self, obj):
+#         total_purchases = BuyInvoice.objects.filter(
+#             paymentinvoicelink__client__in=ClientCompanyLink.objects.filter(Company=obj),
+#             paymentinvoicelink__is_payment='buyinvoice'
+#         ).aggregate(total=db.Sum('amount'))['total'] or 0
+#         return total_purchases
+
+#     def get_total_payments(self, obj):
+#         total_payments = Payment.objects.filter(
+#             paymentinvoicelink__client__in=ClientCompanyLink.objects.filter(Company=obj),
+#             paymentinvoicelink__is_payment='payment'
+#         ).aggregate(total=db.Sum('AmountPaid'))['total'] or 0
+#         return total_payments
+
+#     def get_outstanding_balance(self, obj):
+#         total_purchases = self.get_total_purchases(obj)
+#         total_payments = self.get_total_payments(obj)
+#         return total_purchases - total_payments
+    
+    
 class ClientSummarySerializer(serializers.ModelSerializer):
     customer_id = serializers.IntegerField(source='CompanyID')
-    customer_name = serializers.CharField(source='CompanyName')
+    customer_name = serializers.CharField(source='CompanyName')  # أو CompanyName إذا كان اسم الحقل كذلك
     total_purchases = serializers.SerializerMethodField()
     total_payments = serializers.SerializerMethodField()
     outstanding_balance = serializers.SerializerMethodField()
 
     class Meta:
-        model = Company
+        model = Company  # أو Company إذا غيرت الاسم
         fields = ['customer_id', 'customer_name', 'total_purchases', 'total_payments', 'outstanding_balance']
 
     def get_total_purchases(self, obj):
-        total_purchases = Invoice.objects.filter(
-            paymentinvoicelink__client__in=ClientCompanyLink.objects.filter(Company=obj),
-            paymentinvoicelink__is_payment='invoice'
+        total_purchases = BuyInvoice.objects.filter(
+            client__in=ClientCompanyLink.objects.filter(Company=obj)
         ).aggregate(total=db.Sum('amount'))['total'] or 0
         return total_purchases
 
     def get_total_payments(self, obj):
         total_payments = Payment.objects.filter(
-            paymentinvoicelink__client__in=ClientCompanyLink.objects.filter(Company=obj),
-            paymentinvoicelink__is_payment='payment'
+            client__in=ClientCompanyLink.objects.filter(Company=obj)
         ).aggregate(total=db.Sum('AmountPaid'))['total'] or 0
         return total_payments
 
     def get_outstanding_balance(self, obj):
-        total_purchases = self.get_total_purchases(obj)
-        total_payments = self.get_total_payments(obj)
-        return total_purchases - total_payments
+        return self.get_total_purchases(obj) - self.get_total_payments(obj)   
+    
+    
+    
+    
+    
+    
+    
+    
+    # def _get_cached_totals(self, obj):
+    #     if not hasattr(self, '_totals_cache'):
+    #         self._totals_cache = {}
+
+    #     if obj.pk not in self._totals_cache:
+    #         total_purchases = BuyInvoice.objects.filter(
+    #             client_company_link__Company=obj
+    #         ).aggregate(total=db.Sum('amount'))['total'] or 0
+
+    #         total_payments = Payment.objects.filter(
+    #             client_company_link__Company=obj
+    #         ).aggregate(total=db.Sum('AmountPaid'))['total'] or 0
+
+    #         self._totals_cache[obj.pk] = {
+    #             'purchases': total_purchases,
+    #             'payments': total_payments
+    #         }
