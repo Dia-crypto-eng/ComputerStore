@@ -1,3 +1,5 @@
+Work in Progress — This project is under active development. Features and documentation will be updated as the project evolves.
+
 ## ComputerStore Headless Backend
 
 ComputerStore is a **headless Django REST API** that provides the core backend for a computer store (or generic retail) system.  
